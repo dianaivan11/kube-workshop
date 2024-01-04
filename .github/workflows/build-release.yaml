@@ -66,3 +66,11 @@ jobs:
 
       - name: "Update chart dependencies"
         run: helm dependency update ./kubernetes/helm/smilr
+
+      - name: "Release app with Helm"
+        run: |
+          helm upgrade myapp ./kubernetes/helm/smilr --install --wait --timeout 120s \
+          --set registryPrefix=${{ env.ACR_NAME }}.azurecr.io/ \
+          --set frontend.imageTag=$IMAGE_TAG \
+          --set dataApi.imageTag=$IMAGE_TAG \
+          --set mongodb.enabled=true
