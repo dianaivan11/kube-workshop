@@ -48,6 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' # Only run on main branch
     needs: buildJob
+    environment:
+      name: workshop-environment
+      url: http://20.4.196.202/
 
     steps:
       - name: "Configure kubeconfig"
