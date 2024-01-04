@@ -42,3 +42,19 @@ jobs:
             -t ${{ env.ACR_NAME }}.azurecr.io/smilr/frontend:$IMAGE_TAG \
             -t ${{ env.ACR_NAME }}.azurecr.io/smilr/frontend:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/smilr/frontend:$IMAGE_TAG
+
+  releaseJob:
+    name: "Release to Kubernetes"
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Only run on main branch
+    needs: buildJob
+
+    steps:
+      - name: "Configure kubeconfig"
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.CLUSTER_KUBECONFIG }}
+
+      - name: "Sanity check Kubernetes"
+        run: kubectl get nodes
